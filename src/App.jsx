@@ -30,7 +30,7 @@ const App = () => {
             Rhea's<span className="text-purple-400"> Space</span>
           </h1>
           <p className="text-gray-300 text-lg">
-            Fashion. projects and more....
+            Fashion, Art, projects and more....
           </p>
         </div>
       </header>

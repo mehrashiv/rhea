@@ -6,7 +6,7 @@ export const blogPosts = [
     date: "2025-05-31",
     content: "Me and my friend made this skirt out of my old pair of jeans. It fits us both and we are taking turns wearing it to school. I am so proud of this skirt!!!",
     image: "https://minio-api.rayanmehra.com/public/rhea/IMG_8542.jpeg",
-    tags: ["Art"]
+    tags: ["Fashion"]
   },
   {
     id: 1,
