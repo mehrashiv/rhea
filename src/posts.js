@@ -5,7 +5,7 @@ export const blogPosts = [
     title: "DIY denim mini skirt",
     date: "2025-05-31",
     content: "Me and my friend made this skirt out of my old pair of jeans. It fits us both and we are taking turns wearing it to school. I am so proud of this skirt!!!",
-    image: "https://minio-api.rayanmehra.com/public/rhea/IMG_8597.jpeg",
+    image: "https://minio-api.shivmehra.com/public/rhea/IMG_8597.jpeg",
     tags: ["Fashion"]
   },
   {
@@ -13,7 +13,7 @@ export const blogPosts = [
     title: "DIY denim mini skirt",
     date: "2025-05-31",
     content: "Me and my friend made this skirt out of my old pair of jeans. It fits us both and we are taking turns wearing it to school. I am so proud of this skirt!!!",
-    image: "https://minio-api.rayanmehra.com/public/rhea/IMG_8596.jpeg",
+    image: "https://minio-api.shivmehra.com/public/rhea/IMG_8596.jpeg",
     tags: ["Fashion"]
   },
   {
@@ -21,7 +21,7 @@ export const blogPosts = [
     title: "DIY denim mini skirt",
     date: "2025-05-31",
     content: "Me and my friend made this skirt out of my old pair of jeans. It fits us both and we are taking turns wearing it to school. I am so proud of this skirt!!!",
-    image: "https://minio-api.rayanmehra.com/public/rhea/IMG_8595.jpeg",
+    image: "https://minio-api.shivmehra.com/public/rhea/IMG_8595.jpeg",
     tags: ["Fashion"]
   },
   {
@@ -29,7 +29,7 @@ export const blogPosts = [
     title: "DIY denim mini skirt",
     date: "2025-05-31",
     content: "Me and my friend made this skirt out of my old pair of jeans. It fits us both and we are taking turns wearing it to school. I am so proud of this skirt!!!",
-    image: "https://minio-api.rayanmehra.com/public/rhea/IMG_8594.jpeg",
+    image: "https://minio-api.shivmehra.com/public/rhea/IMG_8594.jpeg",
     tags: ["Fashion"]
   },
   {
@@ -37,7 +37,7 @@ export const blogPosts = [
     title: "DIY denim mini skirt",
     date: "2025-05-31",
     content: "Me and my friend made this skirt out of my old pair of jeans. It fits us both and we are taking turns wearing it to school. I am so proud of this skirt!!!",
-    image: "https://minio-api.rayanmehra.com/public/rhea/IMG_8593.jpeg",
+    image: "https://minio-api.shivmehra.com/public/rhea/IMG_8593.jpeg",
     tags: ["Fashion"]
   },
   {
@@ -45,7 +45,7 @@ export const blogPosts = [
     title: "DIY denim mini skirt",
     date: "2025-05-31",
     content: "Me and my friend made this skirt out of my old pair of jeans. It fits us both and we are taking turns wearing it to school. I am so proud of this skirt!!!",
-    image: "https://minio-api.rayanmehra.com/public/rhea/IMG_8592.jpeg",
+    image: "https://minio-api.shivmehra.com/public/rhea/IMG_8592.jpeg",
     tags: ["Fashion"]
   },
   {
@@ -53,7 +53,7 @@ export const blogPosts = [
     title: "DIY denim mini skirt",
     date: "2025-05-31",
     content: "Me and my friend made this skirt out of my old pair of jeans. It fits us both and we are taking turns wearing it to school. I am so proud of this skirt!!!",
-    image: "https://minio-api.rayanmehra.com/public/rhea/IMG_8542.jpeg",
+    image: "https://minio-api.shivmehra.com/public/rhea/IMG_8542.jpeg",
     tags: ["Fashion"]
   },
   {
@@ -61,7 +61,7 @@ export const blogPosts = [
     title: " DIY Garden House",
     date: "2024-11-18",
     content: "I built this house in 3 hours it took some time but the end result was AWESOMEEEE...",
-    image: "https://minio-api.rayanmehra.com/public/rhea/gardendiy.JPEG",
+    image: "https://minio-api.shivmehra.com/public/rhea/gardendiy.JPEG",
     tags: ["Art"]
   },
 ];
