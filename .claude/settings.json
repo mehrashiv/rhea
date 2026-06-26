@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__insforge__fetch-docs",
+      "mcp__insforge__get-backend-metadata",
+      "mcp__insforge__list-buckets",
+      "mcp__insforge__get-table-schema",
+      "mcp__insforge__run-raw-sql",
+      "Bash(npm view *)",
+      "mcp__insforge__create-bucket",
+      "Skill(tailwind-css-patterns)",
+      "Skill(tailwind-css-patterns:*)",
+      "Skill(tailwind-utility-classes)",
+      "Skill(tailwind-utility-classes:*)",
+      "mcp__insforge__get-anon-key",
+      "Bash(git -C /home/shiv/github/personal/react/instagram status --porcelain)",
+      "Bash(npx --version)",
+      "Bash(npx vercel *)",
+      "Bash(git -C /home/shiv/github/personal/react status --porcelain)",
+      "Bash(git -C /home/shiv/github/personal/react add instagram/)"
+    ]
+  }
+}
