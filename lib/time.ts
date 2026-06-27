@@ -1,5 +1,10 @@
 export function timeAgo(iso: string): string {
-  const diffMs = Date.now() - new Date(iso).getTime();
+  // Postgres returns "timestamp without time zone" values as UTC but without
+  // a trailing "Z", so the JS Date parser would otherwise treat them as local
+  // time and skew the diff by the browser's UTC offset.
+  const hasTimezone = /[zZ]|[+-]\d{2}:?\d{2}$/.test(iso);
+  const utcIso = hasTimezone ? iso : `${iso}Z`;
+  const diffMs = Date.now() - new Date(utcIso).getTime();
   const minutes = Math.floor(diffMs / 60_000);
 
   if (minutes < 1) return "now";
@@ -12,5 +17,11 @@ export function timeAgo(iso: string): string {
   if (days < 7) return `${days}d`;
 
   const weeks = Math.floor(days / 7);
-  return `${weeks}w`;
+  if (weeks < 4) return `${weeks}w`;
+
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months}mo`;
+
+  const years = Math.floor(days / 365);
+  return `${years}y`;
 }
