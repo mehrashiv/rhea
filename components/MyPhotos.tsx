@@ -52,6 +52,20 @@ export function MyPhotos() {
     setPosts((prev) => prev?.filter((p) => p.id !== post.id) ?? prev);
   };
 
+  const handleEditCaption = async (post: Post, newCaption: string) => {
+    const trimmed = newCaption.trim() || null;
+    const { error } = await insforge.database
+      .from("posts")
+      .update({ caption: trimmed })
+      .eq("id", post.id);
+    if (error) {
+      throw new Error(error.message);
+    }
+    setPosts((prev) =>
+      prev?.map((p) => (p.id === post.id ? { ...p, caption: trimmed } : p)) ?? prev
+    );
+  };
+
   return (
     <main className="lila-container">
       <UploadDropzone onPosted={loadPosts} />
@@ -80,6 +94,7 @@ export function MyPhotos() {
               likeCount={post.likes.length}
               onDelete={() => handleDelete(post)}
               deleting={deletingId === post.id}
+              onEditCaption={(newCaption) => handleEditCaption(post, newCaption)}
             />
           ))}
         </div>

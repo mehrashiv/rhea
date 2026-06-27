@@ -32,7 +32,20 @@
       "Bash(curl -s http://localhost:3000/l0gin -o /tmp/l0gin.html -w \"%{http_code}\\\\n\")",
       "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} | %{content_type}\\\\n\" \"https://insforge.shivmehra.com/api/storage/buckets/post-images/objects/WIN_20230525_09_56_59_Pro-1782538488749-ig1ff3.jpg\")",
       "Bash(node /tmp/claude-1000/-home-shiv-github-personal-rhea/0ad63177-609b-4a3d-be66-180bf850039c/scratchpad/create-users.mjs)",
-      "Bash(node /home/shiv/github/personal/rhea/scrap/create-users.mjs)"
+      "Bash(node /home/shiv/github/personal/rhea/scrap/create-users.mjs)",
+      "Bash(curl -s -o /dev/null -w \"npm registry: %{http_code}\\\\n\" --max-time 5 https://registry.npmjs.org/playwright)",
+      "Bash(curl -s -o /dev/null -w \"playwright CDN: %{http_code}\\\\n\" --max-time 5 https://playwright.azureedge.net)",
+      "Bash(npx --no-install playwright --version)",
+      "Bash(timeout 30 bash -c 'until curl -sf http://localhost:3000 >/dev/null; do sleep 1; done')",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(node -e ' *)",
+      "Bash(NODE_PATH=/home/shiv/.npm/_npx/705bc6b22212b352/node_modules node -e \"const {chromium}=require\\('playwright'\\); console.log\\('ok', typeof chromium.launch\\)\")",
+      "Bash(NODE_PATH=/home/shiv/.npm/_npx/705bc6b22212b352/node_modules node drive.mjs)",
+      "Bash(mkdir -p node_modules)",
+      "Bash(ln -sf /home/shiv/.npm/_npx/705bc6b22212b352/node_modules/playwright node_modules/playwright)",
+      "Bash(ln -sf /home/shiv/.npm/_npx/705bc6b22212b352/node_modules/playwright-core node_modules/playwright-core)",
+      "Bash(node drive.mjs)",
+      "Bash(node drive2.mjs)"
     ]
   }
 }

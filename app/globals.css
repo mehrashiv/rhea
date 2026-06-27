@@ -438,11 +438,68 @@ input::placeholder {
   gap: 8px;
 }
 
+.post-card__caption-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 8px;
+}
+
 .post-card__caption {
-  margin: 8px 0 0;
+  margin: 0;
+  flex: 1;
   font-size: 15px;
   line-height: 1.5;
   color: var(--text-body);
+}
+
+.post-card__add-caption {
+  flex: 1;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-faint);
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.post-card__edit-caption {
+  flex-shrink: 0;
+  margin-top: 1px;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-pill);
+  border: none;
+  background: transparent;
+  color: var(--text-faint);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.post-card__edit-caption:hover:not(:disabled) {
+  background: var(--surface-raised);
+  color: var(--accent);
+}
+
+.caption-edit {
+  margin-top: 8px;
+}
+
+.caption-edit .caption-input {
+  margin-top: 0;
+}
+
+.caption-edit__actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
 }
 
 .post-card__delete {

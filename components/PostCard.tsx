@@ -1,3 +1,4 @@
+import { useState, type KeyboardEvent } from "react";
 import { Avatar } from "./Avatar";
 import { HeartIcon } from "./HeartIcon";
 import { LikeButton } from "./LikeButton";
@@ -13,6 +14,7 @@ type PostCardProps = {
   onToggleLike?: () => void;
   onDelete?: () => void;
   deleting?: boolean;
+  onEditCaption?: (caption: string) => Promise<void>;
 };
 
 export function PostCard({
@@ -26,7 +28,47 @@ export function PostCard({
   onToggleLike,
   onDelete,
   deleting,
+  onEditCaption,
 }: PostCardProps) {
+  const [isEditingCaption, setIsEditingCaption] = useState(false);
+  const [captionDraft, setCaptionDraft] = useState(caption ?? "");
+  const [savingCaption, setSavingCaption] = useState(false);
+  const [captionError, setCaptionError] = useState<string | null>(null);
+
+  const startEditingCaption = () => {
+    setCaptionDraft(caption ?? "");
+    setCaptionError(null);
+    setIsEditingCaption(true);
+  };
+
+  const cancelEditingCaption = () => {
+    setIsEditingCaption(false);
+    setCaptionError(null);
+  };
+
+  const saveCaption = async () => {
+    if (!onEditCaption) return;
+    setSavingCaption(true);
+    setCaptionError(null);
+    try {
+      await onEditCaption(captionDraft);
+      setIsEditingCaption(false);
+    } catch (err) {
+      setCaptionError(err instanceof Error ? err.message : "Could not save caption.");
+    } finally {
+      setSavingCaption(false);
+    }
+  };
+
+  const handleCaptionKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      saveCaption();
+    } else if (e.key === "Escape") {
+      cancelEditingCaption();
+    }
+  };
+
   return (
     <article className="post-card">
       <header className="post-card__header">
@@ -68,7 +110,55 @@ export function PostCard({
             </>
           )}
         </div>
-        {caption && <p className="post-card__caption">{caption}</p>}
+
+        {isEditingCaption ? (
+          <div className="caption-edit">
+            <textarea
+              value={captionDraft}
+              onChange={(e) => setCaptionDraft(e.target.value)}
+              onKeyDown={handleCaptionKeyDown}
+              rows={2}
+              placeholder="Say how you made it…"
+              className="caption-input"
+              disabled={savingCaption}
+              autoFocus
+            />
+            {captionError && <p className="field-error">{captionError}</p>}
+            <div className="caption-edit__actions">
+              <button type="button" onClick={cancelEditingCaption} disabled={savingCaption} className="btn--text">
+                Cancel
+              </button>
+              <button type="button" onClick={saveCaption} disabled={savingCaption} className="btn btn--post">
+                {savingCaption ? "Saving…" : "Save"}
+              </button>
+            </div>
+          </div>
+        ) : (
+          (caption || onEditCaption) && (
+            <div className="post-card__caption-row">
+              {caption ? (
+                <p className="post-card__caption">{caption}</p>
+              ) : (
+                <button type="button" onClick={startEditingCaption} className="post-card__add-caption">
+                  Add a caption…
+                </button>
+              )}
+              {onEditCaption && caption && (
+                <button
+                  type="button"
+                  onClick={startEditingCaption}
+                  aria-label="Edit caption"
+                  className="post-card__edit-caption"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 20h9" />
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          )
+        )}
       </div>
     </article>
   );
