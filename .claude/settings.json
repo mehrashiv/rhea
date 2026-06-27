@@ -45,7 +45,10 @@
       "Bash(ln -sf /home/shiv/.npm/_npx/705bc6b22212b352/node_modules/playwright node_modules/playwright)",
       "Bash(ln -sf /home/shiv/.npm/_npx/705bc6b22212b352/node_modules/playwright-core node_modules/playwright-core)",
       "Bash(node drive.mjs)",
-      "Bash(node drive2.mjs)"
+      "Bash(node drive2.mjs)",
+      "Bash(npx @insforge/cli current)",
+      "Bash(npx @insforge/cli whoami)",
+      "Bash(git check-ignore *)"
     ]
   }
 }
