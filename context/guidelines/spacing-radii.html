@@ -1,0 +1,19 @@
+<!-- @dsCard group="Spacing" name="Radii" subtitle="Soft, generous corners" viewport="700x150" -->
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  *{box-sizing:border-box} html,body{margin:0}
+  body{font-family:var(--font-sans);background:var(--surface-card);padding:26px 28px;-webkit-font-smoothing:antialiased;display:flex;gap:22px;align-items:center}
+  .col{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .box{width:74px;height:64px;background:var(--accent-wash);border:1.5px solid var(--border-accent)}
+  .nm{font-size:12px;font-weight:600;color:var(--text-strong)}
+  .v{font-size:11px;color:var(--text-faint)}
+</style></head>
+<body>
+  <div class="col"><div class="box" style="border-radius:var(--r-sm)"></div><div class="nm">sm</div><div class="v">8px</div></div>
+  <div class="col"><div class="box" style="border-radius:var(--r-md)"></div><div class="nm">md</div><div class="v">13px</div></div>
+  <div class="col"><div class="box" style="border-radius:var(--r-lg)"></div><div class="nm">lg</div><div class="v">16px</div></div>
+  <div class="col"><div class="box" style="border-radius:var(--r-xl)"></div><div class="nm">xl</div><div class="v">20px</div></div>
+  <div class="col"><div class="box" style="border-radius:var(--r-pill);width:120px"></div><div class="nm">pill</div><div class="v">999px</div></div>
+</body></html>

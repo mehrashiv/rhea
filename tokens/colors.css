@@ -1,0 +1,47 @@
+:root {
+  /* ---- Brand / lilac ramp ---- */
+  --lila-700: #5A47B8;  /* deep press */
+  --lila-600: #6A57C4;  /* hover */
+  --lila-500: #7E6CD4;  /* primary lilac */
+  --lila-300: #B4A8E6;  /* soft accent */
+  --lila-200: #DCD6F7;  /* petal */
+  --lila-100: #F4F1FD;  /* wash */
+  --lila-050: #FBFAFE;  /* whisper */
+
+  /* ---- Ink / neutrals ---- */
+  --ink-900: #211E2E;   /* headings, strong text */
+  --ink-700: #403C4C;   /* body text */
+  --ink-500: #6B6678;   /* muted text */
+  --ink-400: #9A96A6;   /* faint text, meta */
+  --ink-200: #ECE9F4;   /* hairline border */
+  --ink-100: #F0EEF6;   /* subtle border / divider */
+  --paper:   #FFFFFF;   /* base surface */
+
+  /* ---- Semantic surface ---- */
+  --surface-page:    var(--lila-050);
+  --surface-card:    var(--paper);
+  --surface-raised:  var(--lila-100);
+  --surface-sunken:  var(--lila-050);
+
+  /* ---- Semantic text ---- */
+  --text-strong:  var(--ink-900);
+  --text-body:    var(--ink-700);
+  --text-muted:   var(--ink-500);
+  --text-faint:   var(--ink-400);
+  --text-onlila:  #FFFFFF;
+
+  /* ---- Semantic interactive ---- */
+  --accent:        var(--lila-500);
+  --accent-hover:  var(--lila-600);
+  --accent-press:  var(--lila-700);
+  --accent-wash:   var(--lila-100);
+  --like:          var(--lila-500);
+
+  /* ---- Borders ---- */
+  --border:        var(--ink-200);
+  --border-subtle: var(--ink-100);
+  --border-accent: var(--lila-300);
+
+  /* ---- Image placeholder gradient (empty photo wells) ---- */
+  --photo-grad: linear-gradient(135deg, #EDE9FA 0%, #DCD6F7 100%);
+}

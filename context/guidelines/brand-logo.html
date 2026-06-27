@@ -1,0 +1,27 @@
+<!-- @dsCard group="Brand" name="Logo & wordmark" subtitle="Mark + Cormorant wordmark, on light & lilac" viewport="700x180" -->
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  *{box-sizing:border-box} html,body{margin:0}
+  body{font-family:var(--font-sans);background:var(--surface-card);color:var(--text-strong);padding:28px;display:flex;gap:40px;align-items:center;-webkit-font-smoothing:antialiased}
+  .lockup{display:flex;align-items:center;gap:12px}
+  .mark{width:44px;height:44px}
+  .word{font-family:var(--font-display);font-weight:600;font-size:40px;letter-spacing:.01em;line-height:1}
+  .chip{padding:28px 32px;border-radius:var(--r-xl);display:flex;align-items:center;justify-content:center}
+  .on-light{background:var(--surface-card);border:1px solid var(--border)}
+  .on-wash{background:var(--surface-raised)}
+  .on-lila{background:var(--accent)}
+  .on-lila .word{color:#fff}
+</style></head>
+<body>
+  <div class="chip on-light">
+    <div class="lockup"><img class="mark" src="../assets/lila-mark.svg" alt=""><span class="word">lila</span></div>
+  </div>
+  <div class="chip on-wash">
+    <div class="lockup"><img class="mark" src="../assets/lila-mark.svg" alt=""><span class="word">lila</span></div>
+  </div>
+  <div class="chip on-lila">
+    <span class="word">lila</span>
+  </div>
+</body></html>

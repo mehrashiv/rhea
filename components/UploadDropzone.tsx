@@ -9,14 +9,11 @@ export function UploadDropzone({ onPosted }: { onPosted: () => void }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [caption, setCaption] = useState("");
-  const [isDragging, setIsDragging] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const [posting, setPosting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const previewUrl = useMemo(
-    () => (file ? URL.createObjectURL(file) : null),
-    [file]
-  );
+  const previewUrl = useMemo(() => (file ? URL.createObjectURL(file) : null), [file]);
 
   useEffect(() => {
     return () => {
@@ -34,21 +31,20 @@ export function UploadDropzone({ onPosted }: { onPosted: () => void }) {
     setFile(f);
   };
 
-  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    setIsDragging(false);
-    pickFile(e.dataTransfer.files?.[0]);
-  };
-
-  const reset = () => {
+  const removeDraft = () => {
     setFile(null);
-    setCaption("");
     if (inputRef.current) inputRef.current.value = "";
   };
 
-  const handlePost = async () => {
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragOver(false);
+    pickFile(e.dataTransfer.files?.[0]);
+  };
+
+  const submitPost = async () => {
     if (!file || !user) return;
-    setUploading(true);
+    setPosting(true);
     setError(null);
 
     const { data: uploaded, error: uploadError } = await insforge.storage
@@ -57,7 +53,7 @@ export function UploadDropzone({ onPosted }: { onPosted: () => void }) {
 
     if (uploadError || !uploaded) {
       setError(uploadError?.message ?? "Upload failed.");
-      setUploading(false);
+      setPosting(false);
       return;
     }
 
@@ -70,88 +66,84 @@ export function UploadDropzone({ onPosted }: { onPosted: () => void }) {
       },
     ]);
 
-    setUploading(false);
+    setPosting(false);
 
     if (insertError) {
       setError(insertError.message);
       return;
     }
 
-    reset();
+    setCaption("");
+    removeDraft();
     onPosted();
   };
 
   return (
-    <div className="border-b border-border px-4 py-4">
-      <div
-        onDragOver={(e) => {
-          e.preventDefault();
-          setIsDragging(true);
-        }}
-        onDragLeave={() => setIsDragging(false)}
-        onDrop={handleDrop}
-        onClick={() => inputRef.current?.click()}
-        className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-6 py-8 text-center transition-colors ${
-          isDragging
-            ? "border-brand-500 bg-brand-50"
-            : "border-border hover:border-brand-500"
-        }`}
-      >
-        {previewUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={previewUrl}
-            alt="Selected preview"
-            className="h-32 w-32 rounded-lg object-cover"
-          />
-        ) : (
-          <>
-            <span className="text-sm font-medium text-foreground">
-              Drag & drop a photo here
-            </span>
-            <span className="text-xs text-muted">or click to browse</span>
-          </>
-        )}
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={(e) => pickFile(e.target.files?.[0])}
-        />
-      </div>
+    <div className="composer">
+      <div className="composer__title">Share a photo</div>
 
-      {file && (
-        <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center">
-          <input
-            type="text"
-            placeholder="Add a caption (optional)"
-            value={caption}
-            onChange={(e) => setCaption(e.target.value)}
-            className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-500"
-          />
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={reset}
-              disabled={uploading}
-              className="rounded-md border border-border px-3 py-2 text-sm font-medium hover:bg-background disabled:opacity-50"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={handlePost}
-              disabled={uploading}
-              className="rounded-md bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600 disabled:opacity-60"
-            >
-              {uploading ? "Posting…" : "Post"}
-            </button>
-          </div>
+      {previewUrl ? (
+        <div className="draft-preview">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={previewUrl} alt="" />
+          <button type="button" onClick={removeDraft} aria-label="Remove photo" className="draft-remove">
+            ✕
+          </button>
+        </div>
+      ) : (
+        <div
+          onClick={() => inputRef.current?.click()}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragOver(true);
+          }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={handleDrop}
+          className={`dropzone ${dragOver ? "dropzone--active" : ""}`}
+        >
+          <svg
+            width="34"
+            height="34"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="var(--accent)"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ marginBottom: 12 }}
+          >
+            <path d="M12 16V4" />
+            <path d="m7 9 5-5 5 5" />
+            <path d="M5 20h14" />
+          </svg>
+          <div className="dropzone__title">Drop a photo here</div>
+          <div className="dropzone__hint">or click to browse</div>
         </div>
       )}
 
-      {error && <p className="mt-2 text-sm text-like-500">{error}</p>}
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="visually-hidden"
+        onChange={(e) => pickFile(e.target.files?.[0])}
+      />
+
+      <textarea
+        value={caption}
+        onChange={(e) => setCaption(e.target.value)}
+        rows={2}
+        placeholder="Say how you made it…"
+        className="caption-input"
+      />
+
+      {error && <p className="field-error">{error}</p>}
+
+      <div className="composer__footer">
+        <button type="button" onClick={submitPost} disabled={!file || posting} className="btn btn--post">
+          {posting ? "Posting…" : "Post"}
+        </button>
+      </div>
     </div>
   );
 }

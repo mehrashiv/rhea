@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="styles.css">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{margin:0;background:var(--surface-page)}
+  ::selection{background:var(--lila-200)}
+  textarea::placeholder,input::placeholder{color:var(--text-faint)}
+  @keyframes lila-spin { to { transform: rotate(360deg) } }
+  @keyframes lila-rise { from { opacity:0; transform: translateY(8px) } to { opacity:1; transform:none } }
+</style>
+</helmet>
+
+<div ref="{{ rootRef }}" style="min-height:100vh;background:var(--surface-page);font-family:var(--font-sans);color:var(--text-body);-webkit-font-smoothing:antialiased">
+
+  <!-- ===================== PUBLIC MASTHEAD ===================== -->
+  <sc-if value="{{ isPublic }}" hint-placeholder-val="{{ true }}">
+    <div data-screen-label="Public feed">
+      <div style="text-align:center;padding:54px 20px 30px;background:radial-gradient(120% 70% at 50% 0%, var(--lila-100) 0%, var(--surface-page) 60%)">
+        <div onClick="{{ goLogin }}" style="display:inline-flex;align-items:center;gap:11px;cursor:default;user-select:none">
+          <img src="assets/lila-mark.svg" alt="" style="width:38px;height:38px">
+          <span style="font-family:var(--font-display);font-weight:600;font-size:42px;color:var(--text-strong);line-height:1">lila</span>
+        </div>
+        <p style="font-size:15px;color:var(--text-muted);margin:14px 0 0">A quiet place for the clothes and drawings people make.</p>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===================== AUTH HEADER ===================== -->
+  <sc-if value="{{ showApp }}" hint-placeholder-val="{{ false }}">
+    <header data-screen-label="App" style="position:sticky;top:0;z-index:5;background:rgba(251,250,254,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--border-subtle)">
+      <div style="max-width:600px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:12px">
+        <div style="display:flex;align-items:center;gap:9px">
+          <img src="assets/lila-mark.svg" alt="" style="width:30px;height:30px">
+          <span style="font-family:var(--font-display);font-weight:600;font-size:28px;color:var(--text-strong);line-height:1">lila</span>
+        </div>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+          <span style="font-size:13px;color:var(--text-muted)">{{ greeting }}</span>
+          <button onClick="{{ signOut }}" style="background:var(--paper);color:var(--text-strong);font-weight:600;font-size:13px;padding:9px 16px;border:1px solid var(--border);border-radius:var(--r-pill);cursor:pointer;white-space:nowrap">Sign out</button>
+        </div>
+      </div>
+      <div style="max-width:600px;margin:0 auto;padding:0 20px">
+        <div style="display:flex;gap:28px;border-bottom:1px solid var(--border)">
+          <button onClick="{{ setFeed }}" style="{{ feedTabStyle }}">Feed</button>
+          <button onClick="{{ setMine }}" style="{{ mineTabStyle }}">My Photos</button>
+        </div>
+      </div>
+    </header>
+  </sc-if>
+
+  <!-- ===================== LOGIN (hidden / invite only) ===================== -->
+  <sc-if value="{{ showLogin }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Login" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(120% 80% at 50% 0%, var(--lila-100) 0%, var(--surface-page) 58%)">
+      <div style="width:100%;max-width:380px">
+        <div style="display:flex;align-items:center;justify-content:center;gap:11px;margin-bottom:8px">
+          <img src="assets/lila-mark.svg" alt="" style="width:36px;height:36px">
+          <span style="font-family:var(--font-display);font-weight:600;font-size:38px;color:var(--text-strong);line-height:1">lila</span>
+        </div>
+        <p style="text-align:center;font-size:13px;color:var(--text-faint);letter-spacing:.04em;margin:0 0 26px">Members only · invitation required</p>
+
+        <label style="display:block;font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--text-muted);margin:0 0 6px">Email</label>
+        <input value="{{ email }}" onChange="{{ onEmail }}" type="email" placeholder="you@email.com" style="width:100%;border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px;font-family:var(--font-sans);font-size:15px;outline:none;color:var(--text-body);background:var(--paper)">
+
+        <label style="display:block;font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--text-muted);margin:16px 0 6px">Password</label>
+        <input value="{{ password }}" onChange="{{ onPassword }}" onKeyDown="{{ onLoginKey }}" type="password" placeholder="••••••••" style="width:100%;border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px;font-family:var(--font-sans);font-size:15px;outline:none;color:var(--text-body);background:var(--paper)">
+
+        <sc-if value="{{ loginError }}" hint-placeholder-val="{{ false }}">
+          <p style="font-size:13px;color:#C0607E;margin:12px 0 0">Enter your email and password to continue.</p>
+        </sc-if>
+
+        <button onClick="{{ submitLogin }}" style="width:100%;margin-top:22px;background:var(--accent);color:#fff;font-weight:600;font-size:16px;padding:14px 28px;border:none;border-radius:var(--r-pill);cursor:pointer">Log in</button>
+        <div style="text-align:center;margin-top:16px">
+          <button onClick="{{ goPublic }}" style="background:none;border:none;color:var(--text-faint);font-size:13px;cursor:pointer">← Back to gallery</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===================== FEED (public read-only OR auth) ===================== -->
+  <sc-if value="{{ showFeed }}" hint-placeholder-val="{{ true }}">
+    <main style="max-width:600px;margin:0 auto;padding:24px 20px 64px">
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <sc-for list="{{ visiblePosts }}" as="post" hint-placeholder-count="3">
+          <article style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-sm)">
+            <header style="display:flex;align-items:center;gap:10px;padding:13px 16px">
+              <div style="width:34px;height:34px;border-radius:var(--r-pill);flex:none;background:var(--accent-wash);color:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;font-size:16px;border:1px solid var(--border-subtle)">{{ post.initial }}</div>
+              <span style="font-weight:600;font-size:14px;color:var(--text-strong)">{{ post.author }}</span>
+              <span style="margin-left:auto;font-size:12px;color:var(--text-faint)">{{ post.time }}</span>
+            </header>
+            <div style="position:relative;aspect-ratio:4 / 5;background:var(--photo-grad);display:flex;align-items:center;justify-content:center;overflow:hidden">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--lila-300)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+              <sc-if value="{{ post.hasImage }}" hint-placeholder-val="{{ false }}">
+                <div style="{{ post.photoStyle }}"></div>
+              </sc-if>
+            </div>
+            <div style="padding:12px 16px 18px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <sc-if value="{{ post.canLike }}" hint-placeholder-val="{{ false }}">
+                  <button onClick="{{ post.onLike }}" aria-label="Like" style="width:40px;height:40px;border-radius:var(--r-pill);border:none;background:transparent;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-left:-8px" style-hover="background:var(--surface-raised)">
+                    <sc-if value="{{ post.liked }}" hint-placeholder-val="{{ false }}">
+                      <span style="color:var(--like);display:inline-flex"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span>
+                    </sc-if>
+                    <sc-if value="{{ post.notLiked }}" hint-placeholder-val="{{ true }}">
+                      <span style="color:var(--text-muted);display:inline-flex"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span>
+                    </sc-if>
+                  </button>
+                </sc-if>
+                <sc-if value="{{ post.cannotLike }}" hint-placeholder-val="{{ true }}">
+                  <span style="width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;color:var(--text-faint)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></span>
+                </sc-if>
+                <span style="font-weight:600;font-size:14px;color:var(--text-strong)">{{ post.likeLabel }}</span>
+              </div>
+              <sc-if value="{{ post.hasCaption }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:8px 0 0;font-size:15px;line-height:1.5;color:var(--text-body)">{{ post.caption }}</p>
+              </sc-if>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+
+      <!-- lazy-scroll sentinel + spinner -->
+      <sc-if value="{{ hasMore }}" hint-placeholder-val="{{ true }}">
+        <div ref="{{ sentinelRef }}" style="height:1px"></div>
+        <div style="display:flex;justify-content:center;padding:26px 0 4px">
+          <div style="width:22px;height:22px;border:2px solid var(--lila-200);border-top-color:var(--accent);border-radius:50%;animation:lila-spin .7s linear infinite"></div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ atEnd }}" hint-placeholder-val="{{ false }}">
+        <div style="text-align:center;padding:30px 0 4px;font-size:13px;color:var(--text-faint)">You're all caught up</div>
+      </sc-if>
+    </main>
+  </sc-if>
+
+  <!-- ===================== MY PHOTOS (auth only) ===================== -->
+  <sc-if value="{{ showMine }}" hint-placeholder-val="{{ false }}">
+    <main style="max-width:600px;margin:0 auto;padding:24px 20px 80px">
+      <!-- composer -->
+      <div style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--r-lg);box-shadow:var(--shadow-sm);padding:18px;margin-bottom:24px">
+        <div style="font-family:var(--font-display);font-weight:600;font-size:26px;color:var(--text-strong);margin-bottom:14px">Share a photo</div>
+
+        <sc-if value="{{ hasDraft }}" hint-placeholder-val="{{ false }}">
+          <div style="position:relative;border-radius:var(--r-md);overflow:hidden;aspect-ratio:4 / 5;background:var(--photo-grad)">
+            <div style="{{ draftStyle }}"></div>
+            <button onClick="{{ removeDraft }}" aria-label="Remove photo" style="position:absolute;top:10px;right:10px;border:none;border-radius:var(--r-pill);width:32px;height:32px;background:rgba(33,30,46,.55);color:#fff;cursor:pointer;font-size:15px;line-height:1">✕</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ noDraft }}" hint-placeholder-val="{{ true }}">
+          <div onClick="{{ pickFile }}" onDragOver="{{ onDragOver }}" onDragLeave="{{ onDragLeave }}" onDrop="{{ onDrop }}" style="{{ dropStyle }}">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:12px"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/></svg>
+            <div style="font-family:var(--font-display);font-weight:500;font-size:24px;color:var(--text-strong)">Drop a photo here</div>
+            <div style="font-size:14px;color:var(--text-faint);margin-top:6px">or click to browse</div>
+          </div>
+        </sc-if>
+
+        <input type="file" accept="image/*" ref="{{ fileRef }}" onChange="{{ onFileChange }}" style="display:none">
+
+        <textarea value="{{ draftCaption }}" onChange="{{ onCaption }}" rows="2" placeholder="Say how you made it…" style="width:100%;margin-top:14px;border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px;font-family:var(--font-sans);font-size:15px;color:var(--text-body);resize:none;outline:none;background:var(--paper);line-height:1.5"></textarea>
+
+        <div style="display:flex;justify-content:flex-end;margin-top:14px">
+          <button onClick="{{ submitPost }}" style="{{ postBtnStyle }}">Post</button>
+        </div>
+      </div>
+
+      <!-- your posts -->
+      <sc-if value="{{ hasMine }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <sc-for list="{{ myPosts }}" as="post" hint-placeholder-count="2">
+            <article style="background:var(--surface-card);border:1px solid var(--border-subtle);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-sm)">
+              <header style="display:flex;align-items:center;gap:10px;padding:13px 16px">
+                <div style="width:34px;height:34px;border-radius:var(--r-pill);flex:none;background:var(--accent-wash);color:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:600;font-size:16px;border:1px solid var(--border-subtle)">{{ post.initial }}</div>
+                <span style="font-weight:600;font-size:14px;color:var(--text-strong)">{{ post.author }}</span>
+                <span style="margin-left:auto;font-size:12px;color:var(--text-faint)">{{ post.time }}</span>
+                <button onClick="{{ post.onDelete }}" aria-label="Delete post" style="margin-left:10px;width:30px;height:30px;border-radius:var(--r-pill);border:none;background:transparent;color:var(--text-faint);display:inline-flex;align-items:center;justify-content:center;cursor:pointer" style-hover="background:var(--surface-raised);color:#C0607E">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+                </button>
+              </header>
+              <div style="position:relative;aspect-ratio:4 / 5;background:var(--photo-grad);display:flex;align-items:center;justify-content:center;overflow:hidden">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--lila-300)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                <sc-if value="{{ post.hasImage }}" hint-placeholder-val="{{ true }}">
+                  <div style="{{ post.photoStyle }}"></div>
+                </sc-if>
+              </div>
+              <div style="padding:12px 16px 18px">
+                <div style="display:flex;align-items:center;gap:6px;color:var(--text-muted)">
+                  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                  <span style="font-weight:600;font-size:14px;color:var(--text-strong)">{{ post.likeLabel }}</span>
+                </div>
+                <sc-if value="{{ post.hasCaption }}" hint-placeholder-val="{{ true }}">
+                  <p style="margin:8px 0 0;font-size:15px;line-height:1.5;color:var(--text-body)">{{ post.caption }}</p>
+                </sc-if>
+              </div>
+            </article>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ noMine }}" hint-placeholder-val="{{ true }}">
+        <div style="text-align:center;padding:46px 20px;border:1px dashed var(--border-accent);border-radius:var(--r-lg);background:var(--surface-sunken)">
+          <div style="font-family:var(--font-display);font-size:22px;color:var(--text-strong)">Your photos live here</div>
+          <p style="font-size:14px;color:var(--text-muted);margin-top:6px">Share your first one above.</p>
+        </div>
+      </sc-if>
+    </main>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:440,&quot;height&quot;:860},&quot;startView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;Signed in&quot;,&quot;options&quot;:[&quot;Public feed&quot;,&quot;Login&quot;,&quot;Signed in&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Demo&quot;},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#C98BB0&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#7E6CD4&quot;,&quot;#6A57C4&quot;,&quot;#9B86E0&quot;,&quot;#C98BB0&quot;],&quot;section&quot;:&quot;Theme&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.fileRef = React.createRef();
+    this.rootRef = React.createRef();
+
+    const names = ["Mara", "Sena", "Wren", "Priya", "Iris", "Noa", "Talia", "June", "Etta", "Suki", "Remi", "Lux"];
+    const caps = [
+      "I made this by myself. Used a very new technique.",
+      "first draft of the spring jacket — still deciding on the collar.",
+      "little sketch before bed \u2726",
+      "thrifted this & took it in at the waist. obsessed.",
+      "embroidery practice. my fingers hurt but worth it.",
+      "drew my outfit from yesterday.",
+      "reworked an old dress into a top + skirt set.",
+      "color study for a print i'm designing.",
+      "hand-painted these sneakers over the weekend.",
+      "patchwork bag from leftover scraps.",
+      "trying a new silhouette — thoughts?",
+      "quick figure drawing, ten minutes.",
+    ];
+    const times = ["1h", "2h", "4h", "6h", "9h", "13h", "18h", "1d", "1d", "2d", "3d", "4d", "5d", "6d", "1w", "1w", "2w", "2w", "3w", "3w", "4w", "5w", "6w", "7w", "8w", "9w"];
+    const posts = [];
+    for (let i = 0; i < 26; i++) {
+      posts.push({
+        id: "seed-" + i,
+        author: names[i % names.length],
+        time: times[i % times.length],
+        image: null,
+        caption: caps[i % caps.length],
+        likes: 6 + ((i * 13) % 88),
+        liked: false,
+        owner: false,
+      });
+    }
+
+    const sv = (props && props.startView) || "Public feed";
+    this.state = {
+      me: sv === "Signed in" ? "Ava" : null,
+      showLoginScreen: sv === "Login",
+      tab: "feed",
+      posts: posts,
+      loaded: 6,
+      loadingMore: false,
+      email: "",
+      password: "",
+      loginError: false,
+      draftImage: null,
+      draftCaption: "",
+      dragOver: false,
+    };
+
+    this.observer = (typeof IntersectionObserver !== "undefined")
+      ? new IntersectionObserver((entries) => { if (entries[0] && entries[0].isIntersecting) this.loadMore(); }, { rootMargin: "300px" })
+      : null;
+    this._sentinel = null;
+    this.sentinelRef = (node) => {
+      if (this.observer) {
+        if (this._sentinel) this.observer.unobserve(this._sentinel);
+        this._sentinel = node;
+        if (node) this.observer.observe(node);
+      }
+    };
+  }
+
+  componentDidMount() { this.applyAccent(); }
+  componentDidUpdate() { this.applyAccent(); }
+  applyAccent() {
+    const c = this.props && this.props.accentColor;
+    const el = this.rootRef && this.rootRef.current;
+    if (el && c) { el.style.setProperty("--accent", c); el.style.setProperty("--accent-hover", c); }
+  }
+
+  /* ---- nav / auth ---- */
+  goLogin = () => this.setState({ showLoginScreen: true });
+  goPublic = () => this.setState({ showLoginScreen: false, email: "", password: "", loginError: false });
+  onEmail = (e) => this.setState({ email: e.target.value, loginError: false });
+  onPassword = (e) => this.setState({ password: e.target.value, loginError: false });
+  onLoginKey = (e) => { if (e.key === "Enter") this.submitLogin(); };
+  submitLogin = () => {
+    const em = this.state.email.trim(), pw = this.state.password;
+    if (!em || !pw) { this.setState({ loginError: true }); return; }
+    const local = em.split("@")[0] || "you";
+    const name = local.charAt(0).toUpperCase() + local.slice(1);
+    this.setState({ me: name, showLoginScreen: false, tab: "feed", email: "", password: "" });
+  };
+  signOut = () => this.setState({ me: null, showLoginScreen: false, tab: "feed", draftImage: null, draftCaption: "", loaded: 6 });
+
+  setTab = (t) => this.setState({ tab: t });
+
+  /* ---- lazy scroll ---- */
+  loadMore = () => {
+    if (this.state.loadingMore) return;
+    if (this.state.loaded >= this.state.posts.length) return;
+    this.setState({ loadingMore: true });
+    setTimeout(() => {
+      this.setState((s) => ({ loaded: Math.min(s.loaded + 6, s.posts.length), loadingMore: false }));
+    }, 550);
+  };
+
+  /* ---- likes ---- */
+  toggleLike = (id) => this.setState((s) => ({
+    posts: s.posts.map((p) => p.id === id ? { ...p, liked: !p.liked, likes: p.likes + (p.liked ? -1 : 1) } : p),
+  }));
+
+  /* ---- composer ---- */
+  pickFile = () => { if (this.fileRef.current) this.fileRef.current.click(); };
+  readFile = (file) => {
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = (e) => this.setState({ draftImage: e.target.result });
+    r.readAsDataURL(file);
+  };
+  onFileChange = (e) => this.readFile(e.target.files && e.target.files[0]);
+  onDragOver = (e) => { e.preventDefault(); this.setState({ dragOver: true }); };
+  onDragLeave = () => this.setState({ dragOver: false });
+  onDrop = (e) => { e.preventDefault(); this.setState({ dragOver: false }); this.readFile(e.dataTransfer.files && e.dataTransfer.files[0]); };
+  onCaption = (e) => this.setState({ draftCaption: e.target.value });
+  removeDraft = () => this.setState({ draftImage: null });
+  submitPost = () => {
+    if (!this.state.draftImage) return;
+    const p = { id: "mine-" + Date.now(), author: this.state.me, time: "now", image: this.state.draftImage, caption: this.state.draftCaption.trim(), likes: 0, liked: false, owner: true };
+    this.setState((s) => ({ posts: [p, ...s.posts], draftImage: null, draftCaption: "", loaded: s.loaded + 1 }));
+  };
+  deletePost = (id) => this.setState((s) => ({ posts: s.posts.filter((p) => p.id !== id) }));
+
+  /* ---- view helpers ---- */
+  decorate(p, authed) {
+    return {
+      id: p.id,
+      author: p.author,
+      time: p.time,
+      image: p.image,
+      caption: p.caption,
+      initial: (p.author.trim()[0] || "\u00b7").toUpperCase(),
+      hasImage: !!p.image,
+      noImage: !p.image,
+      photoStyle: { position: "absolute", inset: 0, backgroundImage: p.image ? 'url("' + p.image + '")' : "none", backgroundSize: "cover", backgroundPosition: "center" },
+      liked: p.liked,
+      notLiked: !p.liked,
+      canLike: authed,
+      cannotLike: !authed,
+      likeLabel: p.likes + " " + (p.likes === 1 ? "like" : "likes"),
+      hasCaption: !!p.caption,
+      onLike: () => this.toggleLike(p.id),
+      onDelete: () => this.deletePost(p.id),
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const authed = !!s.me;
+    const isPublic = !authed && !s.showLoginScreen;
+    const showLogin = !authed && s.showLoginScreen;
+    const showFeed = isPublic || (authed && s.tab === "feed");
+    const showMine = authed && s.tab === "mine";
+
+    const tabBase = { appearance: "none", background: "none", border: "none", cursor: "pointer", fontSize: "16px", padding: "0 0 12px", marginBottom: "-1px", fontFamily: "var(--font-sans)", whiteSpace: "nowrap", transition: "color var(--dur) var(--ease)" };
+    const activeTab = Object.assign({}, tabBase, { fontWeight: 600, color: "var(--text-strong)", borderBottom: "2px solid var(--accent)" });
+    const inactiveTab = Object.assign({}, tabBase, { fontWeight: 500, color: "var(--text-faint)", borderBottom: "2px solid transparent" });
+
+    const feedSource = s.posts.slice(0, s.loaded);
+    const visiblePosts = feedSource.map((p) => this.decorate(p, authed));
+    const myPosts = s.posts.filter((p) => p.owner).map((p) => this.decorate(p, authed));
+
+    const dropBase = { borderRadius: "var(--r-lg)", padding: "40px 30px", textAlign: "center", cursor: "pointer", transition: "background var(--dur) var(--ease), border-color var(--dur) var(--ease)" };
+    const dropStyle = s.dragOver
+      ? Object.assign({}, dropBase, { border: "1.5px dashed var(--accent)", background: "var(--accent-wash)" })
+      : Object.assign({}, dropBase, { border: "1.5px dashed var(--border-accent)", background: "var(--surface-sunken)" });
+
+    const postBtnBase = { fontWeight: 600, fontSize: "14px", padding: "11px 24px", border: "none", borderRadius: "var(--r-pill)", cursor: "pointer", background: "var(--accent)", color: "#fff" };
+    const canPost = !!s.draftImage;
+
+    return {
+      rootRef: this.rootRef,
+      isPublic: isPublic,
+      showApp: authed,
+      showLogin: showLogin,
+      showFeed: showFeed,
+      showMine: showMine,
+
+      goLogin: this.goLogin,
+      goPublic: this.goPublic,
+      email: s.email,
+      password: s.password,
+      onEmail: this.onEmail,
+      onPassword: this.onPassword,
+      onLoginKey: this.onLoginKey,
+      submitLogin: this.submitLogin,
+      loginError: s.loginError,
+
+      greeting: "Hi, " + (s.me || ""),
+      signOut: this.signOut,
+      setFeed: () => this.setTab("feed"),
+      setMine: () => this.setTab("mine"),
+      feedTabStyle: s.tab === "feed" ? activeTab : inactiveTab,
+      mineTabStyle: s.tab === "mine" ? activeTab : inactiveTab,
+
+      visiblePosts: visiblePosts,
+      sentinelRef: this.sentinelRef,
+      hasMore: s.loaded < s.posts.length,
+      atEnd: showFeed && s.loaded >= s.posts.length,
+
+      myPosts: myPosts,
+      hasMine: myPosts.length > 0,
+      noMine: myPosts.length === 0,
+
+      hasDraft: !!s.draftImage,
+      noDraft: !s.draftImage,
+      draftImage: s.draftImage,
+      draftStyle: { position: "absolute", inset: 0, backgroundImage: s.draftImage ? 'url("' + s.draftImage + '")' : "none", backgroundSize: "cover", backgroundPosition: "center" },
+      draftCaption: s.draftCaption,
+      onCaption: this.onCaption,
+      removeDraft: this.removeDraft,
+      submitPost: this.submitPost,
+      postBtnStyle: canPost ? postBtnBase : Object.assign({}, postBtnBase, { opacity: 0.5, pointerEvents: "none" }),
+      fileRef: this.fileRef,
+      pickFile: this.pickFile,
+      onFileChange: this.onFileChange,
+      onDragOver: this.onDragOver,
+      onDragLeave: this.onDragLeave,
+      onDrop: this.onDrop,
+      dropStyle: dropStyle,
+    };
+  }
+}
+</script>
+</body>
+</html>

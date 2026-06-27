@@ -17,7 +17,22 @@
       "Bash(npx --version)",
       "Bash(npx vercel *)",
       "Bash(git -C /home/shiv/github/personal/react status --porcelain)",
-      "Bash(git -C /home/shiv/github/personal/react add instagram/)"
+      "Bash(git -C /home/shiv/github/personal/react add instagram/)",
+      "Bash(claude mcp *)",
+      "Bash(timeout 25 npx next dev -p 3001)",
+      "Bash(curl -s -o /dev/null -w \"page: %{http_code}\\\\n\" http://localhost:3001/)",
+      "Bash(curl -s -o /dev/null -w \"backend: %{http_code}\\\\n\" https://insforge.shivmehra.com)",
+      "Bash(curl -s -o /dev/null -w \"page: %{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(curl -s http://localhost:3000/)",
+      "Bash(kill 19622 19623)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(disown)",
+      "Bash(chromium-cli --help)",
+      "Bash(curl -s http://localhost:3000/l0gin -o /tmp/l0gin.html -w \"%{http_code}\\\\n\")",
+      "Bash(curl -s -o /dev/null -w \"HTTP %{http_code} | %{content_type}\\\\n\" \"https://insforge.shivmehra.com/api/storage/buckets/post-images/objects/WIN_20230525_09_56_59_Pro-1782538488749-ig1ff3.jpg\")",
+      "Bash(node /tmp/claude-1000/-home-shiv-github-personal-rhea/0ad63177-609b-4a3d-be66-180bf850039c/scratchpad/create-users.mjs)",
+      "Bash(node /home/shiv/github/personal/rhea/scrap/create-users.mjs)"
     ]
   }
 }
