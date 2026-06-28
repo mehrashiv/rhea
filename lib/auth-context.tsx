@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { insforge } from "./insforge";
+import { signInAction, signOutAction, signUpAction } from "./auth-actions";
 
 export type AppUser = {
   id: string;
@@ -30,46 +31,59 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+function getAccessTokenCookie() {
+  const match = document.cookie
+    .split(";")
+    .find((c) => c.trim().startsWith("insforge_access_token="));
+  return match ? decodeURIComponent(match.split("=")[1] ?? "") : null;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AppUser | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    insforge.auth.getCurrentUser().then(({ data }) => {
-      setUser(data?.user ?? null);
-      setIsLoaded(true);
-    });
+    fetch("/api/auth/refresh", { method: "POST", credentials: "include" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((body) => {
+        if (body?.accessToken) insforge.setAccessToken(body.accessToken);
+        setUser(body?.user ?? null);
+      })
+      .catch(() => setUser(null))
+      .finally(() => setIsLoaded(true));
   }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {
-    const { data, error } = await insforge.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) return { error: error.message };
-    setUser(data?.user ?? null);
+    const { user: signedInUser, error } = await signInAction(email, password);
+    if (error) return { error };
+    const accessToken = getAccessTokenCookie();
+    if (accessToken) insforge.setAccessToken(accessToken);
+    setUser(signedInUser);
     return {};
   }, []);
 
   const signUp = useCallback(
     async (email: string, password: string, name?: string) => {
-      const { data, error } = await insforge.auth.signUp({
+      const { user: signedUpUser, requireEmailVerification, error } = await signUpAction(
         email,
         password,
-        name,
-      });
-      if (error) return { error: error.message };
-      if (!data?.accessToken) {
+        name
+      );
+      if (error) return { error };
+      if (requireEmailVerification) {
         return { error: "Check your email to verify your account, then sign in." };
       }
-      setUser(data.user ?? null);
+      const accessToken = getAccessTokenCookie();
+      if (accessToken) insforge.setAccessToken(accessToken);
+      setUser(signedUpUser);
       return {};
     },
     []
   );
 
   const signOut = useCallback(async () => {
-    await insforge.auth.signOut();
+    await signOutAction();
+    insforge.setAccessToken(null);
     setUser(null);
   }, []);
 
